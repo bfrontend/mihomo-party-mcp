@@ -78,6 +78,26 @@ description = "Clash Party / mihomo-party 代理管理 agent（依赖 mihomo_par
 config_file = "agents/mihomo-party.toml"
 ```
 
+## 规则拆分建议（全局 vs profile）
+
+Clash Party 的覆写分为两类，别混淆：
+
+- **profile override**：在 `profile.yaml` 里被某个 profile 的 `override:` 引用，只对那一个 profile 生效。
+- **global override**：在 `override.yaml` 里 `global: true`，对所有 profile 生效。
+
+典型拆分：
+
+1. `90-global-rules.yaml`（`global: true`）：放所有 profile 共享的规则，如 Gmail 收发分流、微信直连、局域网直连、兜底 `MATCH`。
+2. `1930f207b66.yaml`（`global: false`）：放当前激活 profile 的个性化分流，保留但应去重。
+
+注意：
+
+- 改 override 后**重启 app** 才会重新生成 `work/config.yaml`；`reload_config` 只重载内核当前配置，不一定重新合并 override。
+- 具体域名规则（如 `DOMAIN,imap.gmail.com`）必须排在更宽泛规则（如 `DOMAIN-SUFFIX,google.com`）之前，否则被提前命中。
+- 不要删除含 `+proxies` / `+proxy-groups` 的 override 段，规则可能依赖其中的 `代理出口` / `直连出口` 等出口名。
+
+本仓库的 agent 角色内置上述经验，可直接把“规则去重 / 拆全局 / 调 Gmail 分流”等任务交给它。
+
 ## 工作原理
 
 - **规则来源**：写入前端的 override / profile 文件（持久），而非只改运行配置。
