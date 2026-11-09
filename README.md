@@ -28,8 +28,11 @@
 ```bash
 git clone https://github.com/<you>/mihomo-party-mcp.git
 cd mihomo-party-mcp
-node install.mjs --force        # 注册到 ~/.codex 与 ~/.claude
+node install.mjs --force        # 注册 MCP 到 ~/.codex 与 ~/.claude，并注册 agent 角色
 ```
+
+`--force` 会同时注册三件事：Codex/Claude 的 MCP server、以及 Codex 的 `mihomo_party` 多 agent 角色。
+若只想注册 agent 角色，单独运行 `node install.mjs --agent`。
 
 或手动在客户端配置里加（见下）。
 
@@ -47,6 +50,32 @@ args = ["/absolute/path/to/mihomo-party-mcp/server.mjs"]
 
 ```json
 { "mcpServers": { "mihomo_party": { "command": "/usr/local/bin/node", "args": ["/absolute/path/to/mihomo-party-mcp/server.mjs"] } } }
+```
+
+## 作为 Codex agent 角色使用
+
+仓库内置 `agents/mihomo-party.toml`，是一个 Codex 多 agent 角色（依赖上面的 `mihomo_party` MCP）。
+注册后可在 Codex 里把代理管理任务委派给它（如 `/agent mihomo_party` 或在工作流中作为子 agent）。
+
+安装脚本 `install.mjs --agent` 会：
+
+1. 复制 `agents/mihomo-party.toml` 到 `~/.codex/agents/`；
+2. 在 `~/.codex/config.toml` 开启 `[features] multi_agent = true`；
+3. 追加 `[agents.mihomo_party]` 段指向该角色文件。
+
+对应 `config.toml` 片段：
+
+```toml
+[features]
+multi_agent = true
+
+[agents]
+max_threads = 6
+max_depth = 1
+
+[agents.mihomo_party]
+description = "Clash Party / mihomo-party 代理管理 agent（依赖 mihomo_party MCP）。"
+config_file = "agents/mihomo-party.toml"
 ```
 
 ## 工作原理

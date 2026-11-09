@@ -8,7 +8,8 @@
   },
   "files": [
     "server.mjs",
-    "detect.mjs"
+    "detect.mjs",
+    "agents"
   ],
   "engines": {
     "node": ">=18"
