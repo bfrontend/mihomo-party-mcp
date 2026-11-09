@@ -1,0 +1,29 @@
+{
+  "name": "mihomo-party-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for managing clash/mihomo frontends (mihomo-party, clash-verge-rev) via natural language: rules, profiles, proxy groups, reload.",
+  "type": "module",
+  "bin": {
+    "mihomo-party-mcp": "./server.mjs"
+  },
+  "files": [
+    "server.mjs",
+    "detect.mjs"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "install-codex": "node install.mjs"
+  },
+  "keywords": [
+    "mcp",
+    "clash",
+    "mihomo",
+    "clash-verge",
+    "proxy",
+    "clash-meta"
+  ],
+  "license": "MIT"
+}
